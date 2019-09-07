@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,8 +41,13 @@ public class TeliaBackend {
 		return "<h2>Demo application Thomas Vennström</h2>";
 	}
 	
+	/**
+	 * Should use RequestMethod.DELETE according to spec, but currently I can't get CORS to allow it..
+	 * @param id
+	 * @return
+	 */
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value = "todo/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/deletetodo/{id}", method = RequestMethod.GET)
 	public ResponseEntity delete(@PathVariable("id") int id) {
 		database.delete(id);
 		return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -69,11 +75,14 @@ public class TeliaBackend {
 	
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "todos", method = RequestMethod.POST)
-	public ResponseEntity add(@RequestParam(value = "todo")Todo todo) {
+	public ResponseEntity add(
+			@RequestParam(value = "heading")String heading, 
+			@RequestParam(value = "text")String text ) {
 		
 		try {
-			database.add(todo);
-			return ResponseEntity.status(HttpStatus.OK).body(null);
+			Todo newTodo = new Todo(heading, text, null);
+			newTodo = database.add(newTodo);
+			return ResponseEntity.status(HttpStatus.OK).body(newTodo);
 		} catch (Exception e) {
 			throw new RuntimeException("Failed saving");
 		}
