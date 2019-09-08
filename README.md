@@ -14,6 +14,7 @@ If the server is running you should be able to test it through your browser at `
 
 #### Known issues:
 Gave up the fight with CORS and the delete method. Hence the DELETE function has been implemented as a GET.
+Insert/Update only uses a single method.
 Test only has a single integration test.
 
 ## Frontend
@@ -25,6 +26,8 @@ Run `npm install` and then `npm run serve` to start the app.
 `http://localhost:9090` is where you'll find it.
 
 #### Known issues:
-Can't get rid of the no-mixed-spaces-and-tabs whining.
+Can't get rid of the no-mixed-spaces-and-tabs whining, some "unused" linting that I didn't have time to fix.
 There's no front-end unit testing. If time would have permitted I'd add some Jasmine tests.
-There's no unit testing for the front-end. But 
+There's no unit testing for the front-end. 
+
+A bit too much was pushed to Git (binaries etc).
