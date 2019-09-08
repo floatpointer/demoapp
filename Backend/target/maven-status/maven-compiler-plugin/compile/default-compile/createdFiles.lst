@@ -1,0 +1,4 @@
+com\telia\models\Todo.class
+com\telia\TodoEndpoint.class
+com\telia\AppConfig.class
+com\telia\db\InMemoryDatabase.class
