@@ -15,6 +15,7 @@ import com.telia.models.Todo;
 public class InMemoryDatabase {
 	
 	private final List<Todo> todos;
+	private static final int MAXITEMS = 10;
 	
 	public InMemoryDatabase() {
 		
@@ -27,19 +28,10 @@ public class InMemoryDatabase {
 		existing = new Todo("Sample2", "Only for dev", null);
 		existing.setId(2);
 		todos.add(existing);
-
 	}
 
-	/**
-	 * Would normally return an Optional...
-	 * @param id
-	 * @return
-	 */
 	public synchronized Todo get(int id) {
-		
-		return new Todo("TestA", "TestB", "TestC");
-		
-//		return todos.stream().filter(x -> x.getId() == id).findFirst();
+		return todos.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
 	}
 	
 	public List<Todo> getAll() {
@@ -51,12 +43,22 @@ public class InMemoryDatabase {
 			throw new RuntimeException("TODO cannot be null");
 		}
 		
-		if (todos.size() == 10) {
+		if (todos.size() == InMemoryDatabase.MAXITEMS) {
 			throw new RuntimeException("Database is full");
 		}
 		
-		todo.setId(getMaxIdAndThenSome());
-		todos.add(todo);
+		if(todo.getId() == -1) {
+			System.out.println("Adding new todo");
+			todo.setId(getMaxIdAndThenSome());
+			todos.add(todo);
+		} else {
+			System.out.println("Updating existing todo " + todo.getId());
+			Todo existing = todos.stream().filter(x -> x.getId() == todo.getId()).findAny().orElse(null);
+			if(existing != null) {
+				existing.setHeading(todo.getHeading());
+				existing.setText(todo.getText());
+			}
+		}
 		return todo;
 	}
 	

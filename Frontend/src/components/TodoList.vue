@@ -4,9 +4,11 @@
 			{{errorMessage}}
 
 			<div class="inputForm">
-				<InputForm :selectedTodo="selectedTodo" 
-				:selectedHeading="selectedHeading"
-				:todos="todos" 
+				<InputForm 
+				v-bind:selectedId="selectedId"
+				v-bind:selectedHeading="selectedHeading"
+				v-bind:selectedText="selectedText"
+				v-bind:todos="todos" 
 				v-on:updateTodoArray="onInsert"/>
 			</div>
 
@@ -17,7 +19,7 @@
 							<td class="cell1">{{item.heading}}</td>
 							<td class="cell2">{{item.text}}</td>
 							<td class="cell3" v-on:click="deleteTodo(item.id)"><i class="far fa-trash-alt"></i> Delete</td>
-							<td class="cell3" v-on:click="editTodo(item.id, item.heading, item.text)"><i class="far fa-edit"></i> Edit</td>
+							<td class="cell3" v-on:click="editTodo(item)"><i class="far fa-edit"></i> Edit</td>
 						</tr>
 						<tr>
 							<td colspan="4" class="delimiter"></td>
@@ -41,9 +43,9 @@
 				return {
 					errorMessage: null,
 					todos: [],
-					selectedTodo: -1,
-					selectedHeading: "",
-					selectedText: ""
+					selectedId: -1,
+					selectedText: null,
+					selectedHeading: null
 				}
 		},
 
@@ -53,7 +55,13 @@
 
 		methods: {
 			onInsert(newTodo) {
+
+				this.todos = this.todos.filter(item => item.id !== newTodo.id);
 				this.todos.push(newTodo);
+
+				this.selectedId = -1;
+				this.selectedText = null;
+				this.selectedHeading = null;
 			},
 
 			loadTodos() {
@@ -82,11 +90,10 @@
 				}
 			},
 
-			editTodo(id, heading, text) {
-				// Yes, should use an object instead
-				this.selectedTodo = id;
-				this.selectedHeading = heading;
-				this.selectedText = text;
+			editTodo(item) {
+				this.selectedHeading = item.heading;
+				this.selectedText = item.text;
+				this.selectedId = item.id;
 			},
 
 		}

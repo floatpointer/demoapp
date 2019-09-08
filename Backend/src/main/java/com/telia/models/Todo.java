@@ -5,19 +5,28 @@ package com.telia.models;
  */
 public class Todo {
 	
-	private int id;
-	private String heading;
-	private String text;
-	private String owner; // <- Well... Maybe not the best way to reference something
+	private int 	id;
+	private String 	heading;
+	private String 	text;
+	private String 	owner; 
 	
 	public Todo() {
 	}
 	
 	public Todo(String heading, String text, String owner) {
-		this.heading = heading;
-		this.text = text;
-		this.owner = owner;
+		this.heading 	= heading;
+		this.text 		= text;
+		this.owner 		= owner;
+		this.id			= -1;
 	}
+	
+	public Todo(int id, String heading, String text, String owner) {
+		this.heading 	= heading;
+		this.text 		= text;
+		this.owner 		= owner;
+		this.id			= id;
+	}
+
 	
 	public String getHeading() {
 		return heading;
@@ -43,7 +52,4 @@ public class Todo {
 	public void setOwner(String owner) {
 		this.owner = owner;
 	}
-	
-	
-
 }

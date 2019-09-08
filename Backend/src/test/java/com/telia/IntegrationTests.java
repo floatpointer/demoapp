@@ -32,16 +32,16 @@ public class IntegrationTests {
 	ObjectMapper mapper = new ObjectMapper();
 	
 	@TestConfiguration
-    static class TeliaBackendContextConfiguration {
+    static class TodoEndPointContextConfiguration {
   
         @Bean
-        public TeliaBackend backend() {
-            return new TeliaBackend();
+        public TodoEndpoint backend() {
+            return new TodoEndpoint();
         }
     }
 	
 	@Autowired
-	private TeliaBackend backend;
+	private TodoEndpoint backend;
 	
 	@MockBean
 	private InMemoryDatabase database;

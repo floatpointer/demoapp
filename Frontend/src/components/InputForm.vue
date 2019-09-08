@@ -6,8 +6,8 @@
 		<input type="hidden" v-model="formdata.id"/>
 		<div class="container">
 			<div class="cell">
-				<label>Header</label>
-				<input autofocus="true" v-bind="selectedHeading" v-model="formdata.heading" type="text" id="header"/>
+				<label>Heading</label>
+				<input ref="heading" autofocus="true" v-model="formdata.heading" type="text" id="header"/>
 			</div>
 			<div class="cell">
 				<label>Todo</label>
@@ -33,25 +33,29 @@
 
 	// Stolen from https://vuejsexamples.com/progressbar-for-vue-js-2/
 	import ProgressBar from 'vuejs-progress-bar'
+	import { isNullOrUndefined } from 'util';
 
 	export default {
 	name: 'InputForm',
 	props: {
     	todos: {
-      		type: Array,
+      	type: Array,
      		required: true
 		},
+		selectedId: Number,
+		selectedText: String,
 		selectedHeading: String
 	},
+	
 	data() {
 			return {
 				errorMessage: null,
 				formdata: {
 					id: -1, 
-					heading: "", 
-					text: "", 
+					heading: null, 
+					text: null, 
 				},
-				options: {
+				options: { // Progressbar related
   					text: {
     				color: '#FFFFFF',
     				shadowEnable: true,
@@ -78,9 +82,26 @@
 				}
 			}
 		},
+		watch: {
+    	selectedHeading: {
+    		handler: function(val) {
+				this.formdata.heading = val;
+			}
+			},
+			selectedText: {
+    		handler: function(val) {
+				this.formdata.text = val;
+			}
+			},
+			selectedId: {
+    		handler: function(val) {
+				this.formdata.id = val;
+			}
+			}
+		},
 	computed: {
   		isDisabled: function(){
-			return this.todos.length === 10;
+			return (this.todos.length === 10 || !this.formdata.heading || !this.formdata.text);
 		},
 		getProgress: function() {
 			return this.todos.length * 10;
@@ -100,19 +121,22 @@
 			const form = new FormData();
 			form.append("heading", this.formdata.heading);
 			form.append("text", this.formdata.text);
+			form.append("id", this.formdata.id);
+
+			console.log("Submitting id " + this.formdata.id);
 
 			axios.post("http://localhost:9090/todos/", form)
 			.then(response => {
-				this.formdata.heading = "";
-				this.formdata.text = "";
-				this.formdata.id= -1;
-				this.selectedTodo = -1;
-
 				this.updateTodos(response.data);
+				this.$refs.heading.focus()
 			})
-  			.catch(e => {
+  		.catch(e => {
 				this.errorMessage = e;
 			});
+
+			this.formdata.id = -1;
+			this.formdata.text = null;
+			this.formdata.heading = null;
 		}
 	}
 }
